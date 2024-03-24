@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wasserverbrauch Preisrechner</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  .right-align {
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+  <h1>Wasserverbrauch Preisrechner</h1>
+  <label for="wasserverbrauch">Wasserverbrauch pro Jahr (m³):</label>
+  <input type="number" id="wasserverbrauch" min="0" step="1">
+  <button onclick="berechnePreis()">Berechnen</button>
+  <div id="ergebnis"></div>
+
+  <script>
+    function berechnePreis() {
+      var wasserverbrauch = parseFloat(document.getElementById('wasserverbrauch').value);
+      var mwst = 0.081; // Mehrwertsteuer in Prozent (8.1%)
+      var grundtaxeTrinkwasser = 0;
+      var trinkwasserpreis = 0;
+      var grundtaxeAbwasser = 0;
+      var abwasserpreis = 0;
+      var gesamtpreisOhneMwst = 0;
+      var gesamtpreisMitMwst = 0;
+
+      if (wasserverbrauch <= 10) {
+        grundtaxeTrinkwasser = 9.5 * 12;
+        grundtaxeAbwasser = 6 * 12;
+      } else if (wasserverbrauch <= 20) {
+        grundtaxeTrinkwasser = 11 * 12;
+        grundtaxeAbwasser = 7 * 12;
+      } else if (wasserverbrauch <= 40) {
+        grundtaxeTrinkwasser = 14 * 12;
+        grundtaxeAbwasser = 9 * 12;
+      } else if (wasserverbrauch <= 80) {
+        grundtaxeTrinkwasser = 20 * 12;
+        grundtaxeAbwasser = 13 * 12;
+      } else {
+        grundtaxeTrinkwasser = 25 * 12;
+        grundtaxeAbwasser = 16 * 12;
+      }
+
+      trinkwasserpreis = wasserverbrauch * 2.10;
+      abwasserpreis = wasserverbrauch * 1.80;
+      gesamtpreisOhneMwst = grundtaxeTrinkwasser + trinkwasserpreis + grundtaxeAbwasser + abwasserpreis;
+      gesamtpreisMitMwst = gesamtpreisOhneMwst * (1 + mwst);
+
+      var ergebnisHtml = "<h2>Ergebnis:</h2><table><tr><th>Art</th><th>Berechnungsgrundlage</th><th class='right-align'>Errechneter Preis (exkl. MwSt.)</th><th class='right-align'>Errechneter Preis (inkl. MwSt.)</th></tr>";
+      ergebnisHtml += "<tr><td>Grundtaxe Trinkwasser</td><td>Bezug ";
+      if (wasserverbrauch <= 10) {
+          ergebnisHtml += "bis 10 m³ pro Jahr";
+      } else if (wasserverbrauch <= 20) {
+          ergebnisHtml += "bis 20 m³ pro Jahr";
+      } else if (wasserverbrauch <= 40) {
+          ergebnisHtml += "bis 40 m³ pro Jahr";
+      } else if (wasserverbrauch <= 80) {
+          ergebnisHtml += "bis 80 m³ pro Jahr";
+      } else {
+          ergebnisHtml += "ab 80 m³ pro Jahr";
+      }
+      ergebnisHtml += ", Ansatz pro Monat ";
+      if (wasserverbrauch <= 10) {
+          ergebnisHtml += "9.50 CHF (exkl. MwSt)";
+      } else if (wasserverbrauch <= 20) {
+          ergebnisHtml += "11.00 CHF (exkl. MwSt)";
+      } else if (wasserverbrauch <= 40) {
+          ergebnisHtml += "14.00 CHF (exkl. MwSt)";
+      } else if (wasserverbrauch <= 80) {
+          ergebnisHtml += "20.00 CHF (exkl. MwSt)";
+      } else {
+          ergebnisHtml += "25.00 CHF (exkl. MwSt)";
+      }
+      ergebnisHtml += "</td><td class='right-align'>CHF " + (grundtaxeTrinkwasser).toFixed(2) + "</td><td class='right-align'>CHF " + (grundtaxeTrinkwasser * (1 + mwst)).toFixed(2) + "</td></tr>";
+
+      ergebnisHtml += "<tr><td>Trinkwasserverbrauch</td><td>" + wasserverbrauch.toFixed(2) + " m³ Trinkwasserverbrauch zum Ansatz von 2.10 CHF/Kubikmeter (exkl. MwSt)</td><td class='right-align'>CHF " + trinkwasserpreis.toFixed(2) + "</td><td class='right-align'>CHF " + (trinkwasserpreis * (1 + mwst)).toFixed(2) + "</td></tr>";
+
+      ergebnisHtml += "<tr><td>Grundtaxe Abwasser</td><td>Bezug ";
+      if (wasserverbrauch <= 10) {
+          ergebnisHtml += "bis 10 m³ pro Jahr";
+      } else if (wasserverbrauch <= 20) {
+          ergebnisHtml += "bis 20 m³ pro Jahr";
+      } else if (wasserverbrauch <= 40) {
+          ergebnisHtml += "bis 40 m³ pro Jahr";
+      } else if (wasserverbrauch <= 80) {
+          ergebnisHtml += "bis 80 m³ pro Jahr";
+      } else {
+          ergebnisHtml += "ab 80 m³ pro Jahr";
+      }
+      ergebnisHtml += ", Ansatz pro Monat ";
+      if (wasserverbrauch <= 10) {
+          ergebnisHtml += "6.00 CHF (exkl. MwSt)";
+      } else if (wasserverbrauch <= 20) {
+          ergebnisHtml += "7.00 CHF (exkl. MwSt)";
+      } else if (wasserverbrauch <= 40) {
+          ergebnisHtml += "9.00 CHF (exkl. MwSt)";
+      } else if (wasserverbrauch <= 80) {
+          ergebnisHtml += "13.00 CHF (exkl. MwSt)";
+      } else {
+          ergebnisHtml += "16.00 CHF (exkl. MwSt)";
+      }
+      ergebnisHtml += "</td><td class='right-align'>CHF " + (grundtaxeAbwasser).toFixed(2) + "</td><td class='right-align'>CHF " + (grundtaxeAbwasser * (1 + mwst)).toFixed(2) + "</td></tr>";
+
+      ergebnisHtml += "<tr><td>Abwasserverbrauch</td><td>" + wasserverbrauch.toFixed(2) + " m³ Abwasserverbrauch zum Ansatz von 1.80 CHF/Kubikmeter (exkl. MwSt)</td><td class='right-align'>CHF " + abwasserpreis.toFixed(2) + "</td><td class='right-align'>CHF " + (abwasserpreis * (1 + mwst)).toFixed(2) + "</td></tr>";
+
+      ergebnisHtml += "<tr><td><strong>Total</strong></td><td></td><td class='right-align'><strong>CHF " + gesamtpreisOhneMwst.toFixed(2) + "</strong></td><td class='right-align'><strong>CHF " + gesamtpreisMitMwst.toFixed(2) + "</strong></td></tr>";
+      ergebnisHtml += "</table>";
+
+      ergebnisHtml += "<p>Die Preise gelten für das Jahr 2024. Der Mehrwertsteuersatz beträgt 8.1%.</p>";
+
+      document.getElementById('ergebnis').innerHTML = ergebnisHtml;
+    }
+  </script>
+</body>
+</html>
+
